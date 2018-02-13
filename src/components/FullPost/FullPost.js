@@ -4,28 +4,31 @@ import './FullPost.css';
 
 class FullPost extends Component {
   state = {
-    loadPost: null
+    loadedPost: null
   }
 
   componentDidUpdate () {
     if (this.props.id) {
-      axios.get('http://jsonplaceholder.typicode.com/posts/1' + this.props.id)
-      .then(response => {
-        // console.log(response);
-        this.setState({loadPost: response.data});
-      });
+      if (!this.state.loadedPost || (this.state.loadedPost && this.state.loadedPost.id !== this.props.id)) {
+        axios.get('http://jsonplaceholder.typicode.com/posts/' + this.props.id)
+        .then(response => {
+          // console.log(response);
+          this.setState({loadedPost: response.data});
+        });
+      }
     }
   }
+
     render () {
         let post = <p style={{textAlign: 'center'}}>Please select a Post!</p>;
         if (this.props.id) {
           post = <p style={{textAlign:'center'}}>Loading...!</p>;
         }
-        if (this.state.loadPost) {
+        if (this.state.loadedPost) {
         post = (
             <div className="FullPost">
-                <h1>{this.state.loadPost.title}</h1>
-                <p>{this.state.loadPost.body}</p>
+                <h1>{this.state.loadedPost.title}</h1>
+                <p>{this.state.loadedPost.body}</p>
                 <div className="Edit">
                     <button className="Delete">Delete</button>
                 </div>
